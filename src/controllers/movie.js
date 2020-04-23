@@ -7,6 +7,7 @@ const { JWT_KEY } = process.env;
 
 class MovieData {
   static async addMovieData(req, res) {
+    //if you try to add movie wihtout everything it will return a server error; however, should have a bad request error, in other controllers also
     const accessToken = req.get("Authorization");
     const jwtToken = accessToken.split(" ")[1];
     const userId = jwt.verify(jwtToken, JWT_KEY).userId;
@@ -18,6 +19,7 @@ class MovieData {
           .insert(movieData)
           .returning("*")
           .into("movie");
+        //use else statement here for error handling
         return Response.responseOkCreated(res, movieInfo);
       }
     } catch (error) {
@@ -36,7 +38,7 @@ class MovieData {
   static async getMovieById(req, res) {
     const { id } = req.params;
     try {
-      const movieById = await db("movie").where({ id: req.params.id }).select();
+      const movieById = await db("movie").where({ id }).select();
       return Response.responseOk(res, movieById);
     } catch (error) {
       return Response.responseNotFound(res);
@@ -45,18 +47,18 @@ class MovieData {
   static async deleteMovie(req, res) {
     const { id } = req.params;
     try {
-      const movieToDelete = await db("movie")
-        .where({ id: req.params.id })
-        .del();
+      const movieToDelete = await db("movie").where({ id }).del();
       return Response.responseOk(res, movieToDelete);
     } catch (error) {
       return Response.responseServerError(res);
     }
   }
-  //fix update possibly validation issue 
   static async updateMovie(req, res) {
     const id = req.params.id;
-    const movieData = { ...req.body };
+    const accessToken = req.get("Authorization");
+    const jwtToken = accessToken.split(" ")[1];
+    const userId = jwt.verify(jwtToken, JWT_KEY).userId;
+    const movieData = { ...req.body, userId };
     try {
       const result = await validator.validateAsync(movieData);
       if (!result.error) {
