@@ -8,16 +8,19 @@ class UserData {
   static async addUser(req, res) {
     const { password } = req.body;
     try {
-      const hash = await bcrypt.hashPassword(password, 10);
-      const user = { ...req.body, password: hash };
-      const newUser = await db("user")
-        .returning(["id", "username", "password"])
-        .insert(user);
-      if (newUser.length > 0) {
-        const { id, username } = newUser[0];
-        const token = Token.sign({ username, userId: id });
-        const userData = { username, token };
-        return Response.responseOkUserCreated(res, userData);
+      const result = await validator.validateAsync(req.body);
+      if (!result.error) {
+        const hash = await bcrypt.hashPassword(password, 10);
+        const user = { ...req.body, password: hash };
+        const newUser = await db("user")
+          .returning(["id", "username", "password"])
+          .insert(user);
+        if (newUser.length > 0) {
+          const { id, username } = newUser[0];
+          const token = Token.sign({ username, userId: id });
+          const userData = { username, token };
+          return Response.responseOkUserCreated(res, userData);
+        }
       }
     } catch (error) {
       return Response.responseServerError(res);
