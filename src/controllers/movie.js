@@ -1,6 +1,9 @@
 const db = require("../database/index");
 import * as Response from "../helpers/response/response";
 
+
+
+///use character varying for data type
 class MovieData {
   static async addMovieData(req, res) {
     const movieData = { ...req.body };
