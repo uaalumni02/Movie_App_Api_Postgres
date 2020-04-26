@@ -2,15 +2,13 @@ const db = require("../database/index");
 import * as Response from "../helpers/response/response";
 
 import validator from "../validator/movie";
-import jwt from "jsonwebtoken";
-const { JWT_KEY } = process.env;
-
+import Token from "../helpers/jwt/token";
 
 class MovieData {
   static async addMovieData(req, res) {
     const accessToken = req.get("Authorization");
     const jwtToken = accessToken.split(" ")[1];
-    const userId = jwt.verify(jwtToken, JWT_KEY).userId;
+    const userId = Token.decode(jwtToken).userId;
     const movieData = { ...req.body, userId };
     try {
       const { error } = validator.validate(movieData);
@@ -55,8 +53,7 @@ class MovieData {
     const id = req.params.id;
     const accessToken = req.get("Authorization");
     const jwtToken = accessToken.split(" ")[1];
-    const userId = jwt.verify(jwtToken, JWT_KEY).userId;
-    //use helper to get user ID; can just call function from helper
+    const userId = Token.decode(jwtToken).userId;
     const movieData = { ...req.body, userId };
     try {
       const result = await validator.validateAsync(movieData);
