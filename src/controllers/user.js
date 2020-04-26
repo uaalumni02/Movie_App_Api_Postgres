@@ -65,11 +65,10 @@ class UserData {
       const getAllUsers = await db.select().from("user");
       return Response.responseOk(res, getAllUsers);
     } catch (error) {
-      return Response.responseNotFound(res);
+      return Response.responseServerError(res);
     }
   }
   static async deleteUser(req, res) {
-    const { id } = req.params;
     try {
       const userToDelete = await db("user").where({ id: req.params.id }).del();
       return Response.responseOk(res, userToDelete);
@@ -78,12 +77,11 @@ class UserData {
     }
   }
   static async getUserById(req, res) {
-    const { id } = req.params;
     try {
       const userById = await db("user").where({ id: req.params.id }).select();
       return Response.responseOk(res, userById);
     } catch (error) {
-      return Response.responseNotFound(res);
+      return Response.responseServerError(res);
     }
   }
 }

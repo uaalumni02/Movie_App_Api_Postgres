@@ -10,7 +10,7 @@ router.post("/login", userController.userLogin);
 
 router
   .route("/:id")
-  .delete(checkAuth, userController.getUserById)
+  .delete(checkAuth, userController.deleteUser)
   .get(checkAuth, userController.getUserById);
 
 export default router;
