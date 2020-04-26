@@ -5,33 +5,31 @@ import validator from "../validator/movie";
 import jwt from "jsonwebtoken";
 const { JWT_KEY } = process.env;
 
+
 class MovieData {
   static async addMovieData(req, res) {
-    //if you try to add movie wihtout everything it will return a server error; however, should have a bad request error, in other controllers also
     const accessToken = req.get("Authorization");
     const jwtToken = accessToken.split(" ")[1];
     const userId = jwt.verify(jwtToken, JWT_KEY).userId;
     const movieData = { ...req.body, userId };
     try {
-      const result = await validator.validateAsync(movieData);
-      if (!result.error) {
-        const movieInfo = await db
-          .insert(movieData)
-          .returning("*")
-          .into("movie");
-        //use else statement here for error handling
-        return Response.responseOkCreated(res, movieInfo);
+      const { error } = validator.validate(movieData);
+      if (error) {
+        return Response.responseBadRequest(res);
       }
-    } catch (error) {
+      const movieInfo = await db.insert(movieData).returning("*").into("movie");
+      return Response.responseOkCreated(res, movieInfo);
+    } catch (err) {
       return Response.responseServerError(res);
     }
   }
+  //all catch blocks should have the server error
   static async getAllMovies(req, res) {
     try {
       const getAllMoviesByUser = await db.select().from("movie").orderBy("id");
       return Response.responseOk(res, getAllMoviesByUser);
     } catch (error) {
-      return Response.responseNotFound(res);
+      return Response.responseServerError(res);
     }
   }
 
@@ -41,7 +39,7 @@ class MovieData {
       const movieById = await db("movie").where({ id }).select();
       return Response.responseOk(res, movieById);
     } catch (error) {
-      return Response.responseNotFound(res);
+      return Response.responseServerError(res);
     }
   }
   static async deleteMovie(req, res) {
@@ -58,6 +56,7 @@ class MovieData {
     const accessToken = req.get("Authorization");
     const jwtToken = accessToken.split(" ")[1];
     const userId = jwt.verify(jwtToken, JWT_KEY).userId;
+    //use helper to get user ID; can just call function from helper
     const movieData = { ...req.body, userId };
     try {
       const result = await validator.validateAsync(movieData);
@@ -66,6 +65,7 @@ class MovieData {
           .where({ id })
           .update(movieData)
           .returning("*");
+        //what happens if ID does not exist; also follow same coding patter as add movie regading validation above
         return Response.responseOk(res, movieToUpdate);
       }
     } catch (error) {
