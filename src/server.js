@@ -13,6 +13,7 @@ const router = express.Router();
 //import routes
 import userRoutes from './routes/user.route';
 import movieRoutes from './routes/movie.route';
+import movieUserId from './routes/movieUserID.route';
 
 
 app.use(cors());
@@ -22,6 +23,7 @@ app.use(express.urlencoded({ extended: true }))
 //middleware to utilize routes
 router.use('/user', userRoutes);
 router.use('/movie', movieRoutes);
+router.use('/movieUser', movieUserId);
 
 app.use('/api', router)
 

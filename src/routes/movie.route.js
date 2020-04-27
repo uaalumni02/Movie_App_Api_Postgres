@@ -4,6 +4,7 @@ import movieController from "../controllers/movie";
 
 const router = express.Router();
 
+
 router
   .route("/:id")
   .delete(checkAuth, movieController.deleteMovie)
@@ -13,5 +14,6 @@ router
 router.route("/").get(checkAuth, movieController.getAllMovies);
 
 router.route("/").post(checkAuth, movieController.addMovieData);
+
 
 export default router;

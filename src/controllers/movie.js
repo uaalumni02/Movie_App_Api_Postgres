@@ -67,6 +67,15 @@ class MovieData {
       return Response.responseServerError(res);
     }
   }
+  static async getMovieByUser(req, res) {
+    const { userId } = req.params;
+    try {
+      const movieByUserId = await db("movie").where({ userId }).select();
+      return Response.responseOk(res, movieByUserId);
+    } catch (error) {
+      return Response.responseServerError(res);
+    }
+  }
 }
 
 export default MovieData;
