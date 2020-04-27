@@ -21,6 +21,7 @@ class MovieData {
       return Response.responseServerError(res);
     }
   }
+
   static async getAllMovies(req, res) {
     try {
       const getAllMoviesByUser = await db.select().from("movie").orderBy("id");
@@ -48,7 +49,7 @@ class MovieData {
     }
   }
   static async updateMovie(req, res) {
-    const id = req.params.id;
+    const { id } = req.params;
     const accessToken = req.get("Authorization");
     const jwtToken = accessToken.split(" ")[1];
     const userId = Token.decode(jwtToken).userId;
