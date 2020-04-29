@@ -4,6 +4,8 @@ import * as Response from "../helpers/response/response";
 import validator from "../validator/movie";
 import Token from "../helpers/jwt/token";
 
+import v from "validator";
+
 class MovieData {
   static async addMovieData(req, res) {
     const accessToken = req.get("Authorization");
@@ -32,6 +34,9 @@ class MovieData {
   static async getMovieById(req, res) {
     const { id } = req.params;
     try {
+      if (!v.isUUID(id)) {
+        return Response.responseValidationError(res);
+      }
       const movieById = await db("movie").where({ id }).select();
       if (movieById.length == 0) {
         return Response.responseNotFound(res);
@@ -44,13 +49,15 @@ class MovieData {
   static async deleteMovie(req, res) {
     const { id } = req.params;
     try {
+      if (!v.isUUID(id)) {
+        return Response.responseValidationError(res);
+      }
       const movieToDelete = await db("movie").where({ id }).del();
       if (!movieToDelete) {
         return Response.responseNotFound(res);
       }
       return Response.responseOk(res, movieToDelete);
     } catch (error) {
-      console.log(error);
       return Response.responseServerError(res);
     }
   }
@@ -64,6 +71,9 @@ class MovieData {
       const { error } = validator.validate(movieData);
       if (error) {
         return Response.responseBadRequest(res);
+      }
+      if (!v.isUUID(id)) {
+        return Response.responseValidationError(res);
       }
       const movieToUpdate = await db("movie")
         .where({ id })
