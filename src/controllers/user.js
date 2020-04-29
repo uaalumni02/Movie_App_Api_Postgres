@@ -2,6 +2,7 @@ const db = require("../database/index");
 import Token from "../helpers/jwt/token";
 import bcrypt from "../helpers/bcrypt/bcrypt";
 import validator from "../validator/user";
+import v from "validator";
 import * as Response from "../helpers/response/response";
 
 class UserData {
@@ -69,16 +70,30 @@ class UserData {
     }
   }
   static async deleteUser(req, res) {
+    const { id } = req.params;
     try {
-      const userToDelete = await db("user").where({ id: req.params.id }).del();
+      if (!v.isUUID(id)) {
+        return Response.responseValidationError(res);
+      }
+      const userToDelete = await db("user").where({ id }).del();
+      if (!userToDelete) {
+        return Response.responseNotFound(res);
+      }
       return Response.responseOk(res, userToDelete);
     } catch (error) {
       return Response.responseServerError(res);
     }
   }
   static async getUserById(req, res) {
+    const { id } = req.params;
     try {
-      const userById = await db("user").where({ id: req.params.id }).select();
+      if (!v.isUUID(id)) {
+        return Response.responseValidationError(res);
+      }
+      const userById = await db("user").where({ id }).select();
+      if (userById.length == 0) {
+        return Response.responseNotFound(res);
+      }
       return Response.responseOk(res, userById);
     } catch (error) {
       return Response.responseServerError(res);
