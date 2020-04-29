@@ -8,7 +8,7 @@ const responseBadRequest = (res) => {
 const responseNotFound = (res) => {
     return res.status(404).json({
         success: false,
-        message: 'Unable to show response'
+        message: 'Id does not exist'
     });
 }
 

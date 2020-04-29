@@ -21,7 +21,6 @@ class MovieData {
       return Response.responseServerError(res);
     }
   }
-
   static async getAllMovies(req, res) {
     try {
       const getAllMoviesByUser = await db.select().from("movie").orderBy("id");
@@ -34,6 +33,9 @@ class MovieData {
     const { id } = req.params;
     try {
       const movieById = await db("movie").where({ id }).select();
+      if (movieById.length == 0) {
+        return Response.responseNotFound(res);
+      }
       return Response.responseOk(res, movieById);
     } catch (error) {
       return Response.responseServerError(res);
@@ -43,8 +45,12 @@ class MovieData {
     const { id } = req.params;
     try {
       const movieToDelete = await db("movie").where({ id }).del();
+      if (!movieToDelete) {
+        return Response.responseNotFound(res);
+      }
       return Response.responseOk(res, movieToDelete);
     } catch (error) {
+      console.log(error);
       return Response.responseServerError(res);
     }
   }
@@ -63,6 +69,9 @@ class MovieData {
         .where({ id })
         .update(movieData)
         .returning("*");
+      if (movieToUpdate.length == 0) {
+        return Response.responseNotFound(res);
+      }
       return Response.responseOk(res, movieToUpdate);
     } catch (error) {
       return Response.responseServerError(res);
@@ -72,6 +81,9 @@ class MovieData {
     const { userId } = req.params;
     try {
       const movieByUserId = await db("movie").where({ userId }).select();
+      if (movieByUserId.length == 0) {
+        return Response.responseNotFound(res);
+      }
       return Response.responseOk(res, movieByUserId);
     } catch (error) {
       return Response.responseServerError(res);
