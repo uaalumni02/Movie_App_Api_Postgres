@@ -1,10 +1,9 @@
-const db = require("../database/index");
+import db from "../database/index";
 import * as Response from "../helpers/response/response";
 
 import validator from "../validator/movie";
 import Token from "../helpers/jwt/token";
 
-import v from "validator";
 
 class MovieData {
   static async addMovieData(req, res) {
@@ -34,7 +33,8 @@ class MovieData {
   static async getMovieById(req, res) {
     const { id } = req.params;
     try {
-      if (!v.isUUID(id)) {
+      const { error } = validator.validate({ id });
+      if (error) {
         return Response.responseValidationError(res);
       }
       const movieById = await db("movie").where({ id }).select();
@@ -49,7 +49,8 @@ class MovieData {
   static async deleteMovie(req, res) {
     const { id } = req.params;
     try {
-      if (!v.isUUID(id)) {
+      const { error } = validator.validate({ id });
+      if (error) {
         return Response.responseValidationError(res);
       }
       const movieToDelete = await db("movie").where({ id }).del();
@@ -72,7 +73,8 @@ class MovieData {
       if (error) {
         return Response.responseBadRequest(res);
       }
-      if (!v.isUUID(id)) {
+      const { err } = validator.validate({ id });
+      if (err) {
         return Response.responseValidationError(res);
       }
       const movieToUpdate = await db("movie")
