@@ -1,9 +1,8 @@
 import db from "../database/index";
 import * as Response from "../helpers/response/response";
-
+import Errors from "../helpers/constants/constants";
 import validator from "../validator/movie";
 import Token from "../helpers/jwt/token";
-
 
 class MovieData {
   static async addMovieData(req, res) {
@@ -35,7 +34,7 @@ class MovieData {
     try {
       const { error } = validator.validate({ id });
       if (error) {
-        return Response.responseValidationError(res);
+        return Response.responseValidationError(res, Errors.INVALID_ID);
       }
       const movieById = await db("movie").where({ id }).select();
       if (movieById.length == 0) {
@@ -51,7 +50,7 @@ class MovieData {
     try {
       const { error } = validator.validate({ id });
       if (error) {
-        return Response.responseValidationError(res);
+        return Response.responseValidationError(res, Errors.INVALID_ID);
       }
       const movieToDelete = await db("movie").where({ id }).del();
       if (!movieToDelete) {
@@ -75,7 +74,7 @@ class MovieData {
       }
       const { err } = validator.validate({ id });
       if (err) {
-        return Response.responseValidationError(res);
+        return Response.responseValidationError(res, Errors.INVALID_ID);
       }
       const movieToUpdate = await db("movie")
         .where({ id })

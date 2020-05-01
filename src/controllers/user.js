@@ -2,6 +2,7 @@ const db = require("../database/index");
 import Token from "../helpers/jwt/token";
 import bcrypt from "../helpers/bcrypt/bcrypt";
 import validator from "../validator/user";
+import Errors from "../helpers/constants/constants";
 import * as Response from "../helpers/response/response";
 
 class UserData {
@@ -73,7 +74,7 @@ class UserData {
     try {
       const { error } = validator.validate({ id });
       if (error) {
-        return Response.responseValidationError(res);
+        return Response.responseValidationError(res, Errors.INVALID_ID);
       }
       const userToDelete = await db("user").where({ id }).del();
       if (!userToDelete) {
@@ -89,7 +90,7 @@ class UserData {
     try {
       const { error } = validator.validate({ id });
       if (error) {
-        return Response.responseValidationError(res);
+        return Response.responseValidationError(res, Errors.INVALID_ID);
       }
       const userById = await db("user").where({ id }).select();
       if (userById.length == 0) {
