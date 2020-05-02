@@ -23,7 +23,7 @@ class UserData {
           if (newUser.length > 0) {
             const { id, username } = newUser[0];
             const token = Token.sign({ username, userId: id });
-            const userData = { username, token };
+            const userData = { username, token, id };
             return Response.responseOkUserCreated(res, userData);
           }
         }
