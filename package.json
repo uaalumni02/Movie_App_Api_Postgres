@@ -34,7 +34,7 @@
     "supertest": "^4.0.2"
   },
   "scripts": {
-    "test": " NODE_ENV=test mocha --require @babel/register ./tests/**/*.js --exit",
+    "test": "(dropdb MovieTestDB && createdb MovieTestDB) && NODE_ENV=test mocha --require @babel/register ./tests/**/*.js --exit",
     "start:dev": "nodemon --exec babel-node src/server",
     "postinstall": "npm run build",
     "build": "babel src -d build",

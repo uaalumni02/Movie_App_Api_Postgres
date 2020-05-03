@@ -1,4 +1,4 @@
-import db from "../database/index";
+import db from "../database/knex";
 import * as Response from "../helpers/response/response";
 import Errors from "../helpers/constants/constants";
 import validator from "../validator/movie";

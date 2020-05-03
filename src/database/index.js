@@ -1,12 +1,10 @@
-const knex = require('knex')({
-    client: 'pg',
-    connection: {
-        host: 'localhost',
-        user: "postgres",
-        password: process.env.PASSWORD,
-        database: "MovieDB",
-        port: 5433
-    }
-})
-
-module.exports = knex;
+module.exports = {
+  test: {
+    client: "pg",
+    connection: process.env.DATABASE_TEST_URL,
+  },
+  development: {
+    client: "pg",
+    connection: process.env.DATABASE_URL,
+  },
+};

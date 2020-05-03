@@ -1,4 +1,4 @@
-const db = require("../database/index");
+import db from "../database/knex";
 import Token from "../helpers/jwt/token";
 import bcrypt from "../helpers/bcrypt/bcrypt";
 import validator from "../validator/user";
