@@ -51,12 +51,11 @@ class UserData {
             userId: user._id,
           });
           const userData = { user, token };
+          console.log(userData.user)
           return Response.responseOk(res, userData);
         }
         return Response.responseBadAuth(res);
-      } else {
-        return Response.responseValidationError(res);
-      }
+      } 
     } catch (error) {
       return Response.responseServerError(res);
     }

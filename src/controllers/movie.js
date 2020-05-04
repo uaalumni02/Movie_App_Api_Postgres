@@ -13,7 +13,7 @@ class MovieData {
     try {
       const { error } = validator.validate(movieData);
       if (error) {
-        return Response.responseBadRequest(res);
+        return Response.responseBadRequest(res, Errors.VALIDATION);
       }
       const movieInfo = await db.insert(movieData).returning("*").into("movie");
       return Response.responseOkCreated(res, movieInfo);
@@ -70,7 +70,7 @@ class MovieData {
     try {
       const { error } = validator.validate(movieData);
       if (error) {
-        return Response.responseBadRequest(res);
+        return Response.responseBadRequest(res, Errors.VALIDATION);
       }
       const { err } = validator.validate({ id });
       if (err) {

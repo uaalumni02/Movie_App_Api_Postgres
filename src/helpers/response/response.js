@@ -1,7 +1,7 @@
-const responseBadRequest = (res) => {
+const responseBadRequest = (res, message) => {
   return res.status(400).json({
     success: false,
-    message: "unable to save provided input",
+    message,
   });
 };
 
