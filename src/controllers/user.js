@@ -35,11 +35,11 @@ class UserData {
   static async userLogin(req, res) {
     const { username, password } = req.body;
     try {
-      const result = await validator.validateAsync(req.body);
+      const result = validator.validate(req.body);
       if (!result.error) {
         const user = await db("user").where({ username: username });
-        if (user == null) {
-          return Response.responseBadAuth(res, user);
+        if (user.length == 0) {
+          return Response.responseBadAuth(res);
         }
         const isSamePassword = await bcrypt.comparePassword(
           password,
@@ -51,11 +51,12 @@ class UserData {
             userId: user._id,
           });
           const userData = { user, token };
-          console.log(userData.user)
           return Response.responseOk(res, userData);
         }
-        return Response.responseBadAuth(res);
-      } 
+        return Response.responseBadAuth(res, Errors.INVALID_ID);
+      } else {
+        return Response.responseValidationError(res, Errors.VALIDATION);
+      }
     } catch (error) {
       return Response.responseServerError(res);
     }
