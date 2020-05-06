@@ -6,6 +6,7 @@ import Token from "../helpers/jwt/token";
 
 class MovieData {
   static async addMovieData(req, res) {
+   // put authorization stuff in helper; gettign auth from req header...need to send it to the function
     const accessToken = req.get("Authorization");
     const jwtToken = accessToken.split(" ")[1];
     const userId = Token.decode(jwtToken).userId;
@@ -38,13 +39,14 @@ class MovieData {
       }
       const movieById = await db("movie").where({ id }).select();
       if (movieById.length == 0) {
-        return Response.responseNotFound(res);
+        return Response.responseNotFound(res, Errors.INVALID_MOVIE);
       }
       return Response.responseOk(res, movieById);
     } catch (error) {
       return Response.responseServerError(res);
     }
   }
+  //check for authorization before deleting and updating can use a middlware to check if logged in
   static async deleteMovie(req, res) {
     const { id } = req.params;
     try {
@@ -54,7 +56,7 @@ class MovieData {
       }
       const movieToDelete = await db("movie").where({ id }).del();
       if (!movieToDelete) {
-        return Response.responseNotFound(res);
+        return Response.responseNotFound(res, Errors.INVALID_MOVIE);
       }
       return Response.responseOk(res, movieToDelete);
     } catch (error) {
@@ -63,6 +65,7 @@ class MovieData {
   }
   static async updateMovie(req, res) {
     const { id } = req.params;
+    // put authorization stuff in helper; gettign auth from req header...need to send it to the function
     const accessToken = req.get("Authorization");
     const jwtToken = accessToken.split(" ")[1];
     const userId = Token.decode(jwtToken).userId;
@@ -81,7 +84,7 @@ class MovieData {
         .update(movieData)
         .returning("*");
       if (movieToUpdate.length == 0) {
-        return Response.responseNotFound(res);
+        return Response.responseNotFound(res, Errors.INVALID_MOVIE);
       }
       return Response.responseOk(res, movieToUpdate);
     } catch (error) {
@@ -93,7 +96,7 @@ class MovieData {
     try {
       const movieByUserId = await db("movie").where({ userId }).select();
       if (movieByUserId.length == 0) {
-        return Response.responseNotFound(res);
+        return Response.responseNotFound(res, Errors.INVALID_MOVIE);
       }
       return Response.responseOk(res, movieByUserId);
     } catch (error) {

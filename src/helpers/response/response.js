@@ -5,10 +5,10 @@ const responseBadRequest = (res, message) => {
   });
 };
 
-const responseNotFound = (res) => {
+const responseNotFound = (res, message) => {
   return res.status(404).json({
     success: false,
-    message: "Id does not exist",
+    message,
   });
 };
 

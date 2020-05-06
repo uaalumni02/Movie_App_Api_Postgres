@@ -5,6 +5,9 @@ import validator from "../validator/user";
 import Errors from "../helpers/constants/constants";
 import * as Response from "../helpers/response/response";
 
+
+//remove db operations and put in helper
+
 class UserData {
   static async addUser(req, res) {
     const { username, password } = req.body;
@@ -17,6 +20,7 @@ class UserData {
       if (user[0] != null) {
         return Response.responseConflict(res, user);
       } else {
+        //can use helper function to hash pswd
         const hash = await bcrypt.hashPassword(password, 10);
         const user = { ...req.body, password: hash };
         const newUser = await db("user")
@@ -49,6 +53,7 @@ class UserData {
         user[0].password
       );
       if (isSamePassword) {
+        //sign can be in helper 
         const token = Token.sign({
           username: user.username,
           userId: user._id,
@@ -70,6 +75,7 @@ class UserData {
     }
   }
   static async deleteUser(req, res) {
+    //research how to make it where need authoriztion before deleting ie middleware 
     const { id } = req.params;
     try {
       const { error } = validator.validate({ id });
@@ -78,7 +84,7 @@ class UserData {
       }
       const userToDelete = await db("user").where({ id }).del();
       if (!userToDelete) {
-        return Response.responseNotFound(res);
+        return Response.responseNotFound(res, Errors.INVALID_USER);
       }
       return Response.responseOk(res, userToDelete);
     } catch (error) {
@@ -93,8 +99,9 @@ class UserData {
         return Response.responseValidationError(res, Errors.INVALID_ID);
       }
       const userById = await db("user").where({ id }).select();
+      //can use ternary for lines 103 - 106 and similiar places in other functions 
       if (userById.length == 0) {
-        return Response.responseNotFound(res);
+        return Response.responseNotFound(res, Errors.INVALID_USER);
       }
       return Response.responseOk(res, userById);
     } catch (error) {
