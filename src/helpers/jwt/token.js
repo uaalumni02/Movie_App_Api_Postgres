@@ -9,7 +9,6 @@ const decode = token => {
   return jwt.verify(token, JWT_KEY);
 }
 
-
 export default {
   sign,
   decode,

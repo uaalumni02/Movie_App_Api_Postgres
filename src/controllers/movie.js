@@ -4,12 +4,11 @@ import Errors from "../helpers/constants/constants";
 import validator from "../validator/movie";
 import Token from "../helpers/jwt/token";
 
+import getToken from "../helpers/auth/auth";
+
 class MovieData {
   static async addMovieData(req, res) {
-   // put authorization stuff in helper; gettign auth from req header...need to send it to the function
-    const accessToken = req.get("Authorization");
-    const jwtToken = accessToken.split(" ")[1];
-    const userId = Token.decode(jwtToken).userId;
+    const userId = getToken(req);
     const movieData = { ...req.body, userId };
     try {
       const { error } = validator.validate(movieData);
@@ -65,10 +64,7 @@ class MovieData {
   }
   static async updateMovie(req, res) {
     const { id } = req.params;
-    // put authorization stuff in helper; gettign auth from req header...need to send it to the function
-    const accessToken = req.get("Authorization");
-    const jwtToken = accessToken.split(" ")[1];
-    const userId = Token.decode(jwtToken).userId;
+    const userId = getToken(req);
     const movieData = { ...req.body, userId };
     try {
       const { error } = validator.validate(movieData);
