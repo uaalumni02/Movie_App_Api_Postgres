@@ -1,10 +1,8 @@
-import db from "../database/knex";
 import * as Response from "../helpers/response/response";
 import Errors from "../helpers/constants/constants";
 import validator from "../validator/movie";
-import Token from "../helpers/jwt/token";
-
 import getToken from "../helpers/auth/auth";
+import Query from "../database/queries/query";
 
 class MovieData {
   static async addMovieData(req, res) {
@@ -15,7 +13,7 @@ class MovieData {
       if (error) {
         return Response.responseBadRequest(res, Errors.VALIDATION);
       }
-      const movieInfo = await db.insert(movieData).returning("*").into("movie");
+      const movieInfo = await Query.addMovie(movieData);
       return Response.responseOkCreated(res, movieInfo);
     } catch (err) {
       return Response.responseServerError(res);
@@ -23,8 +21,8 @@ class MovieData {
   }
   static async getAllMovies(req, res) {
     try {
-      const getAllMoviesByUser = await db.select().from("movie").orderBy("id");
-      return Response.responseOk(res, getAllMoviesByUser);
+      const getAllMovies = await Query.getMovies(req);
+      return Response.responseOk(res, getAllMovies);
     } catch (error) {
       return Response.responseServerError(res);
     }
@@ -36,7 +34,7 @@ class MovieData {
       if (error) {
         return Response.responseValidationError(res, Errors.INVALID_ID);
       }
-      const movieById = await db("movie").where({ id }).select();
+      const movieById = await Query.movieById(id);
       if (movieById.length == 0) {
         return Response.responseNotFound(res, Errors.INVALID_MOVIE);
       }
@@ -53,7 +51,7 @@ class MovieData {
       if (error) {
         return Response.responseValidationError(res, Errors.INVALID_ID);
       }
-      const movieToDelete = await db("movie").where({ id }).del();
+      const movieToDelete = await Query.deleteMovie(id);
       if (!movieToDelete) {
         return Response.responseNotFound(res, Errors.INVALID_MOVIE);
       }
@@ -75,10 +73,7 @@ class MovieData {
       if (err) {
         return Response.responseValidationError(res, Errors.INVALID_ID);
       }
-      const movieToUpdate = await db("movie")
-        .where({ id })
-        .update(movieData)
-        .returning("*");
+      const movieToUpdate = await Query.updateMovie(id, movieData);
       if (movieToUpdate.length == 0) {
         return Response.responseNotFound(res, Errors.INVALID_MOVIE);
       }
@@ -90,7 +85,7 @@ class MovieData {
   static async getMovieByUser(req, res) {
     const { userId } = req.params;
     try {
-      const movieByUserId = await db("movie").where({ userId }).select();
+      const movieByUserId = await Query.movieByUserId(userId);
       if (movieByUserId.length == 0) {
         return Response.responseNotFound(res, Errors.INVALID_MOVIE);
       }

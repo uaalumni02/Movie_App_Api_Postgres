@@ -4,9 +4,7 @@ import bcrypt from "../helpers/bcrypt/bcrypt";
 import validator from "../validator/user";
 import Errors from "../helpers/constants/constants";
 import * as Response from "../helpers/response/response";
-
-
-//remove db operations and put in helper
+import Query from "../database/queries/query";
 
 class UserData {
   static async addUser(req, res) {
@@ -53,7 +51,7 @@ class UserData {
         user[0].password
       );
       if (isSamePassword) {
-        //sign can be in helper 
+        //sign can be in helper
         const token = Token.sign({
           username: user.username,
           userId: user._id,
@@ -68,14 +66,14 @@ class UserData {
   }
   static async getAllUsers(req, res) {
     try {
-      const getAllUsers = await db.select().from("user");
+      const getAllUsers = await Query.getUsers(req);
       return Response.responseOk(res, getAllUsers);
     } catch (error) {
       return Response.responseServerError(res);
     }
   }
   static async deleteUser(req, res) {
-    //research how to make it where need authoriztion before deleting ie middleware 
+    //research how to make it where need authoriztion before deleting ie middleware
     const { id } = req.params;
     try {
       const { error } = validator.validate({ id });
@@ -99,7 +97,7 @@ class UserData {
         return Response.responseValidationError(res, Errors.INVALID_ID);
       }
       const userById = await db("user").where({ id }).select();
-      //can use ternary for lines 103 - 106 and similiar places in other functions 
+      //can use ternary for lines 103 - 106 and similiar places in other functions
       if (userById.length == 0) {
         return Response.responseNotFound(res, Errors.INVALID_USER);
       }
