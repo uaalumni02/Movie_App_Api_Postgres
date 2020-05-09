@@ -1,11 +1,37 @@
 import db from "../knex";
-import { compare } from "bcrypt";
+import UserData from "../../controllers/user";
 
 class Query {
+  static async addUser(userdata) {
+    try {
+      const newUser = await db("user")
+        .returning(["id", "username", "password"])
+        .insert(userdata);
+      return newUser;
+    } catch (error) {
+      throw error;
+    }
+  }
   static async getUsers() {
     try {
       const getAllUsers = await db.select().from("user");
       return getAllUsers;
+    } catch (error) {
+      throw error;
+    }
+  }
+  static async userById(id) {
+    try {
+      const userById = await db("user").where({ id }).select();
+      return userById;
+    } catch (error) {
+      throw error;
+    }
+  }
+  static async deleteUser(id) {
+    try {
+      const userToDelete = await db("user").where({ id }).del();
+      return userToDelete;
     } catch (error) {
       throw error;
     }

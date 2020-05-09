@@ -21,9 +21,7 @@ class UserData {
         //can use helper function to hash pswd
         const hash = await bcrypt.hashPassword(password, 10);
         const user = { ...req.body, password: hash };
-        const newUser = await db("user")
-          .returning(["id", "username", "password"])
-          .insert(user);
+        const newUser = await Query.addUser(user);
         if (newUser.length > 0) {
           const { id, username } = newUser[0];
           const token = Token.sign({ username, userId: id });
@@ -80,7 +78,7 @@ class UserData {
       if (error) {
         return Response.responseValidationError(res, Errors.INVALID_ID);
       }
-      const userToDelete = await db("user").where({ id }).del();
+      const userToDelete = await Query.deleteUser(id);
       if (!userToDelete) {
         return Response.responseNotFound(res, Errors.INVALID_USER);
       }
@@ -96,7 +94,7 @@ class UserData {
       if (error) {
         return Response.responseValidationError(res, Errors.INVALID_ID);
       }
-      const userById = await db("user").where({ id }).select();
+      const userById = await Query.userById(id);
       //can use ternary for lines 103 - 106 and similiar places in other functions
       if (userById.length == 0) {
         return Response.responseNotFound(res, Errors.INVALID_USER);
