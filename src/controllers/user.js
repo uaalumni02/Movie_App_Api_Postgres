@@ -81,10 +81,9 @@ class UserData {
           return Response.responseValidationError(res, Errors.INVALID_ID);
         }
         const userToDelete = await Query.deleteUser(id);
-        if (!userToDelete) {
-          return Response.responseNotFound(res, Errors.INVALID_USER);
-        }
-        return Response.responseOk(res, userToDelete);
+        !userToDelete
+          ? Response.responseNotFound(res, Errors.INVALID_USER)
+          : Response.responseOk(res, userToDelete);
       }
     } catch (error) {
       return Response.responseServerError(res);
