@@ -98,11 +98,9 @@ class UserData {
         return Response.responseValidationError(res, Errors.INVALID_ID);
       }
       const userById = await Query.userById(id);
-      //can use ternary for lines 103 - 106 and similiar places in other functions
-      if (userById.length == 0) {
-        return Response.responseNotFound(res, Errors.INVALID_USER);
-      }
-      return Response.responseOk(res, userById);
+      userById.length == 0
+        ? Response.responseNotFound(res, Errors.INVALID_USER)
+        : Response.responseOk(res, userById);
     } catch (error) {
       return Response.responseServerError(res);
     }
