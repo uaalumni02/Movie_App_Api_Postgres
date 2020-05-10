@@ -2,6 +2,7 @@ import db from "../database/knex";
 import Token from "../helpers/jwt/token";
 import bcrypt from "../helpers/bcrypt/bcrypt";
 import validator from "../validator/user";
+import { checkAuth } from "../helpers/auth/auth";
 import Errors from "../helpers/constants/constants";
 import * as Response from "../helpers/response/response";
 import Query from "../database/queries/query";
@@ -71,18 +72,20 @@ class UserData {
     }
   }
   static async deleteUser(req, res) {
-    //research how to make it where need authoriztion before deleting ie middleware
     const { id } = req.params;
     try {
-      const { error } = validator.validate({ id });
-      if (error) {
-        return Response.responseValidationError(res, Errors.INVALID_ID);
+      const isAuthorized = checkAuth(req);
+      if (isAuthorized) {
+        const { error } = validator.validate({ id });
+        if (error) {
+          return Response.responseValidationError(res, Errors.INVALID_ID);
+        }
+        const userToDelete = await Query.deleteUser(id);
+        if (!userToDelete) {
+          return Response.responseNotFound(res, Errors.INVALID_USER);
+        }
+        return Response.responseOk(res, userToDelete);
       }
-      const userToDelete = await Query.deleteUser(id);
-      if (!userToDelete) {
-        return Response.responseNotFound(res, Errors.INVALID_USER);
-      }
-      return Response.responseOk(res, userToDelete);
     } catch (error) {
       return Response.responseServerError(res);
     }
