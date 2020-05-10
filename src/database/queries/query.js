@@ -1,5 +1,4 @@
 import db from "../knex";
-import UserData from "../../controllers/user";
 
 class Query {
   static async addUser(userdata) {
