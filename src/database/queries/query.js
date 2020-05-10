@@ -36,6 +36,14 @@ class Query {
       throw error;
     }
   }
+  static async checkUserName(req) {
+    try {
+      const user = await db("user").where(req);
+      return user;
+    } catch (error) {
+      throw error;
+    }
+  }
   static async getMovies() {
     try {
       const getAllMovies = await db.select().from("movie").orderBy("id");

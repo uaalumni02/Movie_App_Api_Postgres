@@ -14,7 +14,7 @@ class UserData {
       if (error) {
         return Response.responseValidationError(res, Errors.VALIDATION);
       }
-      const user = await db("user").where({ username: username });
+      const user = await Query.checkUserName({ username: username });
       if (user[0] != null) {
         return Response.responseConflict(res, user);
       } else {
@@ -40,7 +40,7 @@ class UserData {
       if (error) {
         return Response.responseValidationError(res, Errors.VALIDATION);
       }
-      const user = await db("user").where({ username: username });
+      const user = await Query.checkUserName({ username: username });
       if (user.length == 0) {
         return Response.responseBadAuth(res);
       }
