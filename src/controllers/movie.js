@@ -87,6 +87,10 @@ class MovieData {
   static async getMovieByUser(req, res) {
     const { userId } = req.params;
     try {
+      const { error } = validator.validate({ userId });
+      if (error) {
+        return Response.responseValidationError(res, Errors.INVALID_USER_ID);
+      }
       const movieByUserId = await Query.movieByUserId(userId);
       movieByUserId.length == 0
         ? Response.responseNotFound(res, Errors.INVALID_MOVIE)
