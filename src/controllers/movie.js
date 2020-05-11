@@ -37,7 +37,7 @@ class MovieData {
         return Response.responseValidationError(res, Errors.INVALID_ID);
       }
       const movieById = await Query.movieById(id);
-      movieById.length == 0
+      return movieById.length == 0
         ? Response.responseNotFound(res, Errors.INVALID_MOVIE)
         : Response.responseOk(res, movieById);
     } catch (error) {
@@ -55,7 +55,7 @@ class MovieData {
       const isAuthorized = checkAuth(req);
       if (isAuthorized) {
         const movieToDelete = await Query.deleteMovie(id);
-        !movieToDelete
+        return !movieToDelete
           ? Response.responseNotFound(res, Errors.INVALID_MOVIE)
           : Response.responseOk(res, movieToDelete);
       }
@@ -97,7 +97,7 @@ class MovieData {
         return Response.responseValidationError(res, Errors.INVALID_USER_ID);
       }
       const movieByUserId = await Query.movieByUserId(userId);
-      movieByUserId.length == 0
+      return movieByUserId.length == 0
         ? Response.responseNotFound(res, Errors.INVALID_MOVIE)
         : Response.responseOk(res, movieByUserId);
     } catch (error) {

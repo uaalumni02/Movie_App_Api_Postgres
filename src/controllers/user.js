@@ -82,7 +82,7 @@ class UserData {
       const isAuthorized = checkAuth(req);
       if (isAuthorized) {
         const userToDelete = await Query.deleteUser(id);
-        !userToDelete
+        return !userToDelete
           ? Response.responseNotFound(res, Errors.INVALID_USER)
           : Response.responseOk(res, userToDelete);
       }
@@ -99,7 +99,7 @@ class UserData {
         return Response.responseValidationError(res, Errors.INVALID_ID);
       }
       const userById = await Query.userById(id);
-      userById.length == 0
+      return userById.length == 0
         ? Response.responseNotFound(res, Errors.INVALID_USER)
         : Response.responseOk(res, userById);
     } catch (error) {
