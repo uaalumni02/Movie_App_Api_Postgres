@@ -75,12 +75,12 @@ class UserData {
   static async deleteUser(req, res) {
     const { id } = req.params;
     try {
+      const { error } = validator.validate({ id });
+      if (error) {
+        return Response.responseValidationError(res, Errors.INVALID_ID);
+      }
       const isAuthorized = checkAuth(req);
       if (isAuthorized) {
-        const { error } = validator.validate({ id });
-        if (error) {
-          return Response.responseValidationError(res, Errors.INVALID_ID);
-        }
         const userToDelete = await Query.deleteUser(id);
         !userToDelete
           ? Response.responseNotFound(res, Errors.INVALID_USER)

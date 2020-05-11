@@ -48,12 +48,12 @@ class MovieData {
   static async deleteMovie(req, res) {
     const { id } = req.params;
     try {
+      const { error } = validator.validate({ id });
+      if (error) {
+        return Response.responseValidationError(res, Errors.INVALID_ID);
+      }
       const isAuthorized = checkAuth(req);
       if (isAuthorized) {
-        const { error } = validator.validate({ id });
-        if (error) {
-          return Response.responseValidationError(res, Errors.INVALID_ID);
-        }
         const movieToDelete = await Query.deleteMovie(id);
         !movieToDelete
           ? Response.responseNotFound(res, Errors.INVALID_MOVIE)
@@ -69,15 +69,15 @@ class MovieData {
     const userId = getToken(req);
     const movieData = { ...req.body, userId };
     try {
+      const { error } = validator.validate({ id });
+      if (error) {
+        return Response.responseValidationError(res, Errors.INVALID_ID);
+      }
       const isAuthorized = checkAuth(req);
       if (isAuthorized) {
         const { error } = validator.validate(movieData);
         if (error) {
           return Response.responseBadRequest(res, Errors.VALIDATION);
-        }
-        const { err } = validator.validate({ id });
-        if (err) {
-          return Response.responseValidationError(res, Errors.INVALID_ID);
         }
         const movieToUpdate = await Query.updateMovie(id, movieData);
         return movieToUpdate.length == 0
