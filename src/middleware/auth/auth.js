@@ -1,4 +1,4 @@
-import Token from "../jwt/token";
+import Token from "../../helpers/jwt/token";
 
 const getToken = (req, res) => {
   try {

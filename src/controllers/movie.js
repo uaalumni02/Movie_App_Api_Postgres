@@ -1,7 +1,7 @@
 import * as Response from "../helpers/response/response";
 import Errors from "../helpers/constants/constants";
 import validator from "../validator/movie";
-import { getToken, checkAuth } from "../helpers/auth/auth";
+import { getToken, checkAuth } from "../middleware/auth/auth";
 import Query from "../database/queries/query";
 
 class MovieData {
@@ -19,6 +19,7 @@ class MovieData {
       return Response.responseServerError(res);
     }
   }
+
   static async getAllMovies(req, res) {
     try {
       const getAllMovies = await Query.getMovies(req);
@@ -27,6 +28,7 @@ class MovieData {
       return Response.responseServerError(res);
     }
   }
+
   static async getMovieById(req, res) {
     const { id } = req.params;
     try {
@@ -42,6 +44,7 @@ class MovieData {
       return Response.responseServerError(res);
     }
   }
+
   static async deleteMovie(req, res) {
     const { id } = req.params;
     try {
@@ -60,6 +63,7 @@ class MovieData {
       return Response.responseServerError(res);
     }
   }
+
   static async updateMovie(req, res) {
     const { id } = req.params;
     const userId = getToken(req);
@@ -76,7 +80,7 @@ class MovieData {
           return Response.responseValidationError(res, Errors.INVALID_ID);
         }
         const movieToUpdate = await Query.updateMovie(id, movieData);
-        movieToUpdate.length == 0
+        return movieToUpdate.length == 0
           ? Response.responseNotFound(res, Errors.INVALID_MOVIE)
           : Response.responseOk(res, movieToUpdate);
       }
@@ -84,6 +88,7 @@ class MovieData {
       return Response.responseServerError(res);
     }
   }
+
   static async getMovieByUser(req, res) {
     const { userId } = req.params;
     try {

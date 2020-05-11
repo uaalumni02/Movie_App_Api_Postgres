@@ -1,8 +1,7 @@
-import db from "../database/knex";
 import Token from "../helpers/jwt/token";
 import bcrypt from "../helpers/bcrypt/bcrypt";
 import validator from "../validator/user";
-import { checkAuth } from "../helpers/auth/auth";
+import { checkAuth } from "../middleware/auth/auth";
 import Errors from "../helpers/constants/constants";
 import * as Response from "../helpers/response/response";
 import Query from "../database/queries/query";
@@ -19,8 +18,8 @@ class UserData {
       if (user[0] != null) {
         return Response.responseConflict(res, user);
       } else {
-        //can use helper function to hash pswd
         const hash = await bcrypt.hashPassword(password, 10);
+        // console.log( process.env.ROUNDS) add process.env
         const user = { ...req.body, password: hash };
         const newUser = await Query.addUser(user);
         if (newUser.length > 0) {
@@ -34,6 +33,7 @@ class UserData {
       return Response.responseServerError(res);
     }
   }
+
   static async userLogin(req, res) {
     const { username, password } = req.body;
     try {
@@ -50,7 +50,6 @@ class UserData {
         user[0].password
       );
       if (isSamePassword) {
-        //sign can be in helper
         const token = Token.sign({
           username: user.username,
           userId: user._id,
@@ -63,6 +62,7 @@ class UserData {
       return Response.responseServerError(res);
     }
   }
+
   static async getAllUsers(req, res) {
     try {
       const getAllUsers = await Query.getUsers(req);
@@ -71,6 +71,7 @@ class UserData {
       return Response.responseServerError(res);
     }
   }
+
   static async deleteUser(req, res) {
     const { id } = req.params;
     try {
@@ -89,6 +90,7 @@ class UserData {
       return Response.responseServerError(res);
     }
   }
+
   static async getUserById(req, res) {
     const { id } = req.params;
     try {
