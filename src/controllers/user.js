@@ -18,8 +18,10 @@ class UserData {
       if (user[0] != null) {
         return Response.responseConflict(res, user);
       } else {
-        const hash = await bcrypt.hashPassword(password, 10);
-        // console.log( process.env.ROUNDS) add process.env
+        const hash = await bcrypt.hashPassword(
+          password,
+          parseInt(process.env.ROUNDS)
+        );
         const user = { ...req.body, password: hash };
         const newUser = await Query.addUser(user);
         if (newUser.length > 0) {
