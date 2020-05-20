@@ -14,6 +14,7 @@ class MovieData {
         return Response.responseBadRequest(res, Errors.VALIDATION);
       }
       const movieInfo = await Query.addMovie(movieData);
+      console.log(movieInfo)
       return Response.responseOkCreated(res, movieInfo);
     } catch (err) {
       return Response.responseServerError(res);

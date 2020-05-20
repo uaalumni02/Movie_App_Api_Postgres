@@ -94,6 +94,30 @@ class Query {
       throw error;
     }
   }
+  static async addRating(data) {
+    try {
+      const ratingInfo = await db.insert(data).returning("*").into("rating");
+      return ratingInfo;
+    } catch (error) {
+      throw error;
+    }
+  }
+  static async getRatings() {
+    try {
+      const getAllRatings = await db.select().from("rating").orderBy("id");
+      return getAllRatings;
+    } catch (error) {
+      throw error;
+    }
+  }
+  static async ratingById(id) {
+    try {
+      const ratingById = await db("rating").where({ id }).select();
+      return ratingById;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 export default Query;
