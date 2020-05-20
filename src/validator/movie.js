@@ -7,7 +7,9 @@ const schema = Joi.object({
     .min(3)
     .max(30),
   // .required(),
-  rating: Joi.string().min(1).max(7),
+  rating: Joi.string().min(1).regex(
+    /^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$/i
+  ),
   release: Joi.string().min(4).max(4),
   directors: Joi.string()
     .regex(/^([A-Za-z]+[,.]?[ ]?|[A-Za-z]+['-]?)+$/)
