@@ -6,8 +6,7 @@ import Query from "../database/queries/query";
 
 class MovieData {
   static async addMovieData(req, res) {
-    const userId = getToken(req);
-    const movieData = { ...req.body, userId };
+    const movieData = { ...req.body };
     try {
       const { error } = validator.validate(movieData);
       if (error) {
