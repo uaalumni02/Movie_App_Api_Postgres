@@ -2,7 +2,7 @@ const Joi = require("@hapi/joi");
 
 const schema = Joi.object({
   username: Joi.string()
-    .regex(/^([A-Za-z]+[,.]?[ ]?|[A-Za-z]+['-]?)+$/)
+    .regex(/^(?=[a-z0-9.]{3,20}$)[a-z0-9]+\.?[a-z0-9]+$|^.*@\w+\.[\w.]+$/i)
     .min(3)
     .max(30),
   // .required(),
