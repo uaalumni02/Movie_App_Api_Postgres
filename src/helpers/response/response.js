@@ -5,10 +5,11 @@ const responseBadRequest = (res, message) => {
   });
 };
 
-const responseNotFound = (res, message) => {
+const responseNotFound = (res, message, data = []) => {
   return res.status(404).json({
     success: false,
     message,
+    data
   });
 };
 
