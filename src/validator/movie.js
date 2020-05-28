@@ -15,9 +15,10 @@ const schema = Joi.object({
     .regex(/^([A-Za-z]+[,.]?[ ]?|[A-Za-z]+['-]?)+$/)
     .min(3)
     .max(30),
-  userId: Joi.string().regex(
-    /^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$/i
-  ),
+  userId: Joi.string(),
+  // userId: Joi.string().regex(
+  //   /^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$/i
+  // ),
   id: Joi.string().regex(
     /^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$/i
   ),

@@ -43,6 +43,16 @@ class Query {
       throw error;
     }
   }
+  static async addFbUser(userdata) {
+    try {
+      const newUser = await db("user")
+        .returning(["id", "username", "password"])
+        .insert(userdata);
+      return newUser;
+    } catch (error) {
+      throw error;
+    }
+  }
   static async getMovies() {
     try {
       const getAllMovies = await db.select().from("movie").orderBy("id");
