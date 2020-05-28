@@ -110,35 +110,22 @@ class UserData {
   }
   static async addFbUser(req, res) {
     const { username, password } = req.body;
-    
     try {
-      // const { error } = validator.validate(req.body);
-      // if (error) {
-      //   return Response.responseValidationError(res, Errors.VALIDATION);
-      // }
-      // const user = await Query.checkUserName({ username: username });
-      // if (user[0] != null) {
-      //   return Response.responseConflict(res, user);
-      // } else {
-        // const hash = await bcrypt.hashPassword(
-        //   password,
-        //   parseInt(process.env.ROUNDS)
-        // );
+      const user = await Query.checkUserName({ username: username });
+      if (user[0] != null) {
+        const { id, username } = user[0];
+        const token = Token.sign({ username, userId: id });
+        const userData = { username, token, id };
+        return Response.responseOkUserActive(res, userData);
+      } else {
         const user = { ...req.body, password: null };
-        // check if the username, exists ?
-          //Yes - 
-            // get the user data
-            // sign token and send back response
-          //No - 
-            // Create an account 
-            // Sign token and send back response
         const newUser = await Query.addFbUser(user);
         if (newUser.length > 0) {
           const { id, username } = newUser[0];
           const token = Token.sign({ username, userId: id });
           const userData = { username, token, id };
           return Response.responseOkUserCreated(res, userData);
-        // }
+        }
       }
     } catch (error) {
       return Response.responseServerError(res);

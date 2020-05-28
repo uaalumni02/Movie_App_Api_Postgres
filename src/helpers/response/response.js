@@ -60,6 +60,13 @@ const responseValidationError = (res, message) => {
     message,
   });
 };
+const responseOkUserActive = (res, data) => {
+  return res.status(201).json({
+    success: true,
+    message: "user found",
+    data,
+  });
+};
 
 export {
   responseBadRequest,
@@ -71,4 +78,5 @@ export {
   responseOkUserCreated,
   responseServerError,
   responseValidationError,
+  responseOkUserActive
 };
